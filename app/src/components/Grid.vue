@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="flex-1 w-7/10">
-      <div class="flex justify-between">
+      <!-- <div class="flex justify-between">
         <button @click="toggleAudio"
           class="w-1/8 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
           Audio
@@ -37,15 +37,14 @@
           class="w-1/8 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
           Filter
         </button>
-      </div>
-      
+      </div> -->
+
       <div class="grid grid-cols-1 gap-4">
         <div>
           <table class="min-w-full table-auto">
             <thead>
               <tr>
                 <th class="px-4 py-2">TIME</th>
-                <th class="px-4 py-2">TICK</th>
                 <th class="px-4 py-2">DIR</th>
                 <th class="px-4 py-2">C/P</th>
                 <th class="px-4 py-2">EXPIRY</th>
@@ -58,8 +57,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in optionChain" :key="item.id">
-                <td class="border px-4 py-2">{{ item.id }}</td>
+              <tr v-for="item in optionChain" :key="item.time">
                 <td class="border px-4 py-2">{{ item.time }}</td>
                 <td class="border px-4 py-2">{{ item.dir }}</td>
                 <td class="border px-4 py-2">{{ item.cp }}</td>
@@ -77,43 +75,72 @@
       </div>
     </div>
   </div>
-  <div :class="{ 'translate-x-0': isSidebarOpen, 'translate-x-full': !isSidebarOpen }"
-        class="absolute inset-y-0 right-0 transform transition-transform duration-300 ease-in-out w-64 bg-gray-100 shadow-xl">
-        <Sidebar class="sidebar"/>
-      </div>
+  <!-- <div :class="{ 'translate-x-0': isSidebarOpen, 'translate-x-full': !isSidebarOpen }"
+    class="absolute inset-y-0 right-0 transform transition-transform duration-300 ease-in-out w-64 bg-gray-100 shadow-xl">
+    <Sidebar class="sidebar" />
+  </div> -->
 </template>
 
 <script>
 import Sidebar from './Sidebar.vue';
+import webSocketService from '@/services/websocketService';
+
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  return new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }).format(date);
+}
+
 export default {
   components: { Sidebar },
   data() {
     return {
-      indexPrice: 100,
-      putCallRatio: 100,
-      callVolume: 100,
-      putVolume: 100,
+      indexPrice: 0,
+      putCallRatio: 0,
+      callVolume: 0,
+      putVolume: 0,
       optionChain: [
-        { id: 1, time: "time", tick: "tick", dir: "dir", cp: "cp", expiry: "expiry", strike: "strike", spot: "spot", price: "price", size: "size", prem: "prem", iv: "iv" },
-        { id: 2, time: "time", tick: "tick", dir: "dir", cp: "cp", expiry: "expiry", strike: "strike", spot: "spot", price: "price", size: "size", prem: "prem", iv: "iv" },
-        { id: 3, time: "time", tick: "tick", dir: "dir", cp: "cp", expiry: "expiry", strike: "strike", spot: "spot", price: "price", size: "size", prem: "prem", iv: "iv" },
-        { id: 4, time: "time", tick: "tick", dir: "dir", cp: "cp", expiry: "expiry", strike: "strike", spot: "spot", price: "price", size: "size", prem: "prem", iv: "iv" },
-        { id: 5, time: "time", tick: "tick", dir: "dir", cp: "cp", expiry: "expiry", strike: "strike", spot: "spot", price: "price", size: "size", prem: "prem", iv: "iv" },
       ],
       isSidebarOpen: false,
       isAudioEnabled: false
     };
   },
-  mounted() {
-    // Initialize WebSocket and update grid data here
+  created() {
+    webSocketService.connect('ws://localhost:9000');
+    webSocketService.addListener(this.handleMessage);
+  },
+  beforeUnmount() {
+    webSocketService.removeListener(this.handleMessage);
   },
   methods: {
+    handleMessage(message) {
+      switch (message.feedType) {
+        case "INDEX_PRICE": {
+          this.indexPrice = message.data.indexPrice;
+          break;
+        }
+        case "VOLUME": {
+          this.callVolume = message.data.callVolume;
+          this.putVolume = message.data.putVolume;
+          this.putCallRatio = message.data.putCallRatio;
+          break;
+        }
+        case "OPTION": {
+          this.optionChain.unshift({ ...message.data, time: formatTimestamp(message.data.time) })
+          break;
+        }
+      }
+    },
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
     },
     toggleAudio() {
       this.isSidebarOpen = !this.isSidebarOpen;
-    }
+    },
   },
 };
 </script>
