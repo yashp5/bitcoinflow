@@ -2,96 +2,179 @@
   <div class="flex w-full p-4 gap-4">
     <div class="flex flex-col gap-4 w-3/10">
       <div class="grid grid-cols-1 gap-4">
-        <div class="">
-          <h2 class="text-xl font-bold mb-4">Index Price</h2>
-          {{ indexPrice }}
+        <div
+          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg"
+        >
+          <h2 class="text-xl font-bold mb-4 text-white">Index Price</h2>
+          <p class="text-gray-300">{{ indexPrice }}</p>
         </div>
       </div>
       <div class="grid grid-cols-1 gap-4">
-        <div class="">
-          <h2 class="text-xl font-bold mb-4">Put to Call</h2>
-          {{ putCallRatio }}
+        <div
+          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg"
+        >
+          <h2 class="text-xl font-bold mb-4 text-white">Put to Call</h2>
+          <p class="text-gray-300">{{ putCallRatio }}</p>
         </div>
       </div>
       <div class="grid grid-cols-1 gap-4">
-        <div class="">
-          <h2 class="text-xl font-bold mb-4">Call Volume</h2>
-          {{ callVolume }}
+        <div
+          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg"
+        >
+          <h2 class="text-xl font-bold mb-4 text-white">Call Volume</h2>
+          <p class="text-gray-300">{{ callVolume }}</p>
         </div>
       </div>
       <div class="grid grid-cols-1 gap-4">
-        <div class="">
-          <h2 class="text-xl font-bold mb-4">Put Volume</h2>
-          {{ putVolume }}
+        <div
+          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg"
+        >
+          <h2 class="text-xl font-bold mb-4 text-white">Put Volume</h2>
+          <p class="text-gray-300">{{ putVolume }}</p>
         </div>
       </div>
     </div>
     <div class="flex-1 w-7/10">
-      <!-- <div class="flex justify-between">
-        <button @click="toggleAudio"
-          class="w-1/8 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
-          Audio
-        </button>
-        <div class="w-3/4"></div>
-        <button @click="toggleSidebar"
-          class="w-1/8 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+      <div class="flex justify-between gap-4 mb-2">
+        <button
+          @click="toggleSidebar"
+          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 hover:bg-opacity-30 text-white font-semibold py-2 px-4 border border-gray-700 rounded shadow"
+        >
           Filter
         </button>
-      </div> -->
+        <div class="w-3/4"></div>
+        <!-- <button
+          @click="toggleAudio"
+          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 hover:bg-opacity-30 text-white font-semibold py-2 px-4 border border-gray-700 rounded shadow"
+        >
+          Audio
+        </button> -->
+      </div>
 
       <div class="grid grid-cols-1 gap-4">
-        <div>
-          <table class="min-w-full table-auto">
-            <thead>
-              <tr>
-                <th class="px-4 py-2">TIME</th>
-                <th class="px-4 py-2">DIR</th>
-                <th class="px-4 py-2">C/P</th>
-                <th class="px-4 py-2">EXPIRY</th>
-                <th class="px-4 py-2">STRIKE</th>
-                <th class="px-4 py-2">SPOT</th>
-                <th class="px-4 py-2">PRICE</th>
-                <th class="px-4 py-2">SIZE</th>
-                <th class="px-4 py-2">PREM</th>
-                <th class="px-4 py-2">IV</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in optionChain" :key="item.time">
-                <td class="border px-4 py-2">{{ item.time }}</td>
-                <td class="border px-4 py-2">{{ item.dir }}</td>
-                <td class="border px-4 py-2">{{ item.cp }}</td>
-                <td class="border px-4 py-2">{{ item.expiry }}</td>
-                <td class="border px-4 py-2">{{ item.strike }}</td>
-                <td class="border px-4 py-2">{{ item.spot }}</td>
-                <td class="border px-4 py-2">{{ item.price }}</td>
-                <td class="border px-4 py-2">{{ item.size }}</td>
-                <td class="border px-4 py-2">{{ item.prem }}</td>
-                <td class="border px-4 py-2">{{ item.iv }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+          <div
+            class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden"
+          >
+            <table class="w-full text-sm text-left text-gray-300">
+              <thead class="text-xs text-gray-500 uppercase bg-gray-800">
+                <tr>
+                  <th scope="col" class="py-3 px-6">TIME</th>
+                  <th scope="col" class="py-3 px-6">DIR</th>
+                  <th scope="col" class="py-3 px-6">C/P</th>
+                  <th scope="col" class="py-3 px-6">EXPIRY</th>
+                  <th scope="col" class="py-3 px-6">STRIKE</th>
+                  <th scope="col" class="py-3 px-6">SPOT</th>
+                  <th scope="col" class="py-3 px-6">PRICE</th>
+                  <th scope="col" class="py-3 px-6">SIZE</th>
+                  <th scope="col" class="py-3 px-6">PREM</th>
+                  <th scope="col" class="py-3 px-6">IV</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="item in optionChain"
+                  :key="item.time"
+                  :class="{
+                    'glass-yellow-highlight': item.highlight,
+                    'bg-gray-800': !item.highlight,
+                    'border-b border-gray-700 hover:bg-gray-600': true,
+                  }"
+                  class="bg-gray-800 border-b border-gray-700 hover:bg-gray-600"
+                >
+                  <td class="py-4 px-6">
+                    {{ item.time }}
+                  </td>
+                  <td
+                    class="py-4 px-6"
+                    :class="{
+                      'text-green-500': item.dir === 'BUY',
+                      'text-red-500': item.dir === 'SELL',
+                    }"
+                  >
+                    {{ item.dir }}
+                  </td>
+                  <td
+                    class="py-4 px-6"
+                    :class="{
+                      'text-blue-500': item.cp === 'CALL',
+                      'text-orange-500': item.cp === 'PUT',
+                    }"
+                  >
+                    {{ item.cp }}
+                  </td>
+                  <td class="py-4 px-6">
+                    {{ item.expiry }}
+                  </td>
+                  <td class="py-4 px-6">
+                    {{ item.strike }}
+                  </td>
+                  <td class="py-4 px-6">
+                    {{ item.spot }}
+                  </td>
+                  <td class="py-4 px-6">
+                    {{ item.price }}
+                  </td>
+                  <td class="py-4 px-6">
+                    {{ item.size }}
+                  </td>
+                  <td class="py-4 px-6">
+                    {{ item.prem }}
+                  </td>
+                  <td class="py-4 px-6">
+                    {{ item.iv }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- <div :class="{ 'translate-x-0': isSidebarOpen, 'translate-x-full': !isSidebarOpen }"
-    class="absolute inset-y-0 right-0 transform transition-transform duration-300 ease-in-out w-64 bg-gray-100 shadow-xl">
-    <Sidebar class="sidebar" />
-  </div> -->
+  <!-- Sidebar with transition for sliding effect -->
+  <div
+    :class="{
+      'translate-x-full': !isSidebarOpen,
+      'translate-x-0': isSidebarOpen,
+    }"
+    class="fixed inset-y-0 right-0 transform transition-transform duration-300 ease-in-out w-64 bg-gray-800 bg-opacity-20 backdrop-filter backdrop-blur-sm border-l border-gray-700 shadow-xl"
+  >
+    <Sidebar />
+  </div>
 </template>
 
+<style>
+.fade-slide-enter-active {
+  transition: all 0.3s ease;
+}
+.fade-slide-enter, .fade-slide-leave-to /* .fade-slide-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.glass-yellow-highlight {
+  background-color: rgba(
+    253,
+    253,
+    150,
+    0.2
+  ); /* Soft yellow with transparency */
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(253, 253, 150, 0.4); /* Slightly more opaque border for definition */
+}
+</style>
+
 <script>
-import Sidebar from './Sidebar.vue';
-import webSocketService from '@/services/websocketService';
+import Sidebar from "./Sidebar.vue";
+import webSocketService from "@/services/websocketService";
 
 function formatTimestamp(timestamp) {
   const date = new Date(timestamp);
-  return new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
   }).format(date);
 }
 
@@ -103,14 +186,13 @@ export default {
       putCallRatio: 0,
       callVolume: 0,
       putVolume: 0,
-      optionChain: [
-      ],
+      optionChain: [],
       isSidebarOpen: false,
-      isAudioEnabled: false
+      isAudioEnabled: false,
     };
   },
   created() {
-    webSocketService.connect('ws://localhost:9000');
+    webSocketService.connect("ws://localhost:9000");
     webSocketService.addListener(this.handleMessage);
   },
   beforeUnmount() {
@@ -130,7 +212,16 @@ export default {
           break;
         }
         case "OPTION": {
-          this.optionChain.unshift({ ...message.data, time: formatTimestamp(message.data.time) })
+          const newItem = {
+            ...message.data,
+            time: formatTimestamp(message.data.time),
+            highlight: message.data.prem >= 0.1,
+          } 
+          if(this.optionChain.length > 25){
+            this.optionChain.pop();
+          }
+          this.optionChain.unshift(newItem);
+          this.triggerHighlight(newItem);
           break;
         }
       }
@@ -140,6 +231,19 @@ export default {
     },
     toggleAudio() {
       this.isSidebarOpen = !this.isSidebarOpen;
+    },
+    triggerHighlight(item) {
+      if (item.highlight) {
+        setTimeout(() => {
+          const itemIndex = this.optionChain.findIndex(
+            (i) => i.time === item.time
+          );
+          console.log("index: ", itemIndex)
+          if (itemIndex !== -1) {
+            this.optionChain[itemIndex].highlight = false;
+          }
+        }, 2000);
+      }
     },
   },
 };

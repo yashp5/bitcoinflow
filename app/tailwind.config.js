@@ -4,4 +4,11 @@ export default {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
+  theme: {
+    extend: {
+      colors: {
+        'deep-space-blue': '#1B2B40',
+      },
+    },
+  },
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <div class="flex bg-deep-space-blue min-h-screen">
       <Grid/>
     </div>
   </template>
