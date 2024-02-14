@@ -99,10 +99,16 @@ func ParseOptionIdentifier(identifier string) (OptionDetails, error) {
 		return details, fmt.Errorf("invalid option identifier format")
 	}
 
+	var optionType string
+	if matches[4] == "C" {
+		optionType = "CALL"
+	} else {
+		optionType = "PUT"
+	}
 	details = OptionDetails{
 		Expiry:      matches[2],
 		StrikePrice: matches[3],
-		OptionType:  matches[4],
+		OptionType:  optionType,
 	}
 
 	return details, nil
@@ -179,10 +185,16 @@ func transformData() {
 				for _, option := range trades {
 					appfeed := model.AppFeed{}
 					optionDetails, _ := ParseOptionIdentifier(option.InstrumentName)
+					var dir string
+					if option.Direction == "buy" {
+						dir = "BUY"
+					} else {
+						dir = "SELL"
+					}
 					msg := model.Option{
 						Time: option.Timestamp,
 						//Tick:   option.TickDirection,
-						Dir:    option.Direction,
+						Dir:    dir,
 						Cp:     optionDetails.OptionType,
 						Expiry: optionDetails.Expiry,
 						Strike: optionDetails.StrikePrice,
