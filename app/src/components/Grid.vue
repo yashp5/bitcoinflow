@@ -74,7 +74,7 @@
               <tbody>
                 <tr
                   v-for="item in optionChain"
-                  :key="item.time"
+                  :key="item.timestamp"
                   :class="{
                     'glass-yellow-highlight': item.highlight,
                     'bg-gray-800': !item.highlight,
@@ -214,12 +214,10 @@ export default {
         case "OPTION": {
           const newItem = {
             ...message.data,
+            timestamp: message.data.time,
             time: formatTimestamp(message.data.time),
             highlight: message.data.prem >= 0.1,
           } 
-          if(this.optionChain.length > 25){
-            this.optionChain.pop();
-          }
           this.optionChain.unshift(newItem);
           this.triggerHighlight(newItem);
           break;
@@ -236,9 +234,8 @@ export default {
       if (item.highlight) {
         setTimeout(() => {
           const itemIndex = this.optionChain.findIndex(
-            (i) => i.time === item.time
+            (i) => i.timestamp === item.timestamp
           );
-          console.log("index: ", itemIndex)
           if (itemIndex !== -1) {
             this.optionChain[itemIndex].highlight = false;
           }
