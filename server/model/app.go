@@ -6,6 +6,7 @@ type AppFeed struct {
 }
 
 type Option struct {
+	Id   interface{} `json:"id"`
 	Time interface{} `json:"time"`
 	//Tick   interface{} `json:"tick"`
 	Dir    interface{} `json:"dir"`

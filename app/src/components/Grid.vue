@@ -74,7 +74,7 @@
               <tbody>
                 <tr
                   v-for="item in optionChain"
-                  :key="item.timestamp"
+                  :key="item.id"
                   :class="{
                     'glass-yellow-highlight': item.highlight,
                     'bg-gray-800': !item.highlight,
@@ -140,7 +140,10 @@
     }"
     class="fixed inset-y-0 right-0 transform transition-transform duration-300 ease-in-out w-64 bg-gray-800 bg-opacity-20 backdrop-filter backdrop-blur-sm border-l border-gray-700 shadow-xl"
   >
-    <Sidebar />
+    <Sidebar
+      @closeSidebar="toggleSidebar"
+      @filtersSelected="handleFiltersSelected"
+    />
   </div>
 </template>
 
@@ -189,6 +192,7 @@ export default {
       optionChain: [],
       isSidebarOpen: false,
       isAudioEnabled: false,
+      filters: null
     };
   },
   created() {
@@ -214,10 +218,14 @@ export default {
         case "OPTION": {
           const newItem = {
             ...message.data,
-            timestamp: message.data.time,
             time: formatTimestamp(message.data.time),
-            highlight: message.data.prem >= 0.1,
-          } 
+            highlight: message.data.prem >= 0.01,
+          };
+          console.log(newItem)
+          if(this.filters && this.filters.minPremSize && ! (newItem.prem >= this.filters.minPremSize) ) break;
+          if(this.filters && this.filters.minUnitSize && ! (newItem.size >= this.filters.minUnitSize) ) break;
+          if(this.filters && this.filters.typeOption && ! (newItem.cp == this.filters.typeOption) ) break;
+          if(this.filters && this.filters.dirOption && ! (newItem.dir == this.filters.dirOption) ) break;
           this.optionChain.unshift(newItem);
           this.triggerHighlight(newItem);
           break;
@@ -230,11 +238,16 @@ export default {
     toggleAudio() {
       this.isSidebarOpen = !this.isSidebarOpen;
     },
+    handleFiltersSelected(filters) {
+      this.filters = filters
+      console.log(this.filters)
+      this.optionChain = []
+    },
     triggerHighlight(item) {
       if (item.highlight) {
         setTimeout(() => {
           const itemIndex = this.optionChain.findIndex(
-            (i) => i.timestamp === item.timestamp
+            (i) => i.id === item.id
           );
           if (itemIndex !== -1) {
             this.optionChain[itemIndex].highlight = false;

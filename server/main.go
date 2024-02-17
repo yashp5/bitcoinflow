@@ -28,6 +28,8 @@ var subscribtions = map[string]interface{}{
 var dataChan = make(chan []byte)
 var feedChan = make(chan []byte)
 
+//var volumeData = make(map[string]float64)
+
 func fetchData() {
 	var dialer *websocket.Dialer
 
@@ -52,7 +54,7 @@ func fetchData() {
 		log.Fatal("Error sending message:", err)
 	}
 
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(1 * time.Hour)
 	defer ticker.Stop()
 
 	go func() {
@@ -192,6 +194,7 @@ func transformData() {
 						dir = "SELL"
 					}
 					msg := model.Option{
+						Id:   option.TradeID,
 						Time: option.Timestamp,
 						//Tick:   option.TickDirection,
 						Dir:    dir,
@@ -203,6 +206,9 @@ func transformData() {
 						Size:   option.Contracts,
 						Prem:   math.Round(option.Price*option.Contracts*10000) / 10000,
 						Iv:     option.IV,
+					}
+					if msg.Prem == 0.0 {
+						continue
 					}
 					appfeed.FeedType = "OPTION"
 					appfeed.Data = msg
@@ -253,3 +259,25 @@ func main() {
 	go transformData()
 	setupServer()
 }
+
+/*
+TODO:
+
+1. fix max grid rows thing
+
+DONE
+2. add filters
+	a. update all the buttons
+	b. add filter logic
+
+3. fix volume data fetch
+4. add charts for volume data
+
+
+5. add audio option like aggr trade
+6. add slidebar close when we click anywhere outside
+7. add live users and chat option later on
+
+DONE
+8. fix highlights
+*/
