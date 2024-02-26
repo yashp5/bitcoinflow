@@ -35,20 +35,19 @@
       </div>
     </div>
     <div class="flex-1 w-7/10">
-      <div class="flex justify-between gap-4 mb-2">
+      <div class="flex gap-4 mb-2">
         <button
           @click="toggleSidebar"
-          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 hover:bg-opacity-30 text-white font-semibold py-2 px-4 border border-gray-700 rounded shadow"
+          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 hover:bg-opacity-30 text-white font-semibold py-2 px-4 border border-gray-700 rounded shadow flex items-center justify-center"
         >
-          Filter
+          <i class="fas fa-filter"></i>
         </button>
-        <div class="w-3/4"></div>
-        <!-- <button
+        <button
           @click="toggleAudio"
-          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 hover:bg-opacity-30 text-white font-semibold py-2 px-4 border border-gray-700 rounded shadow"
+          class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 hover:bg-opacity-30 text-white font-semibold py-2 px-4 border border-gray-700 rounded shadow flex items-center justify-center"
         >
-          Audio
-        </button> -->
+          <i class="fas fa-volume-up"></i>
+        </button>
       </div>
 
       <div class="grid grid-cols-1 gap-4">
@@ -170,6 +169,7 @@
 <script>
 import Sidebar from "./Sidebar.vue";
 import webSocketService from "@/services/websocketService";
+import audioService from "@/services/audioService";
 
 function formatTimestamp(timestamp) {
   const date = new Date(timestamp);
@@ -216,12 +216,12 @@ export default {
           break;
         }
         case "OPTION": {
+          const MIN_PREM_HIGHLIGHT = 0.5;
           const newItem = {
             ...message.data,
             time: formatTimestamp(message.data.time),
-            highlight: message.data.prem >= 0.01,
+            highlight: message.data.prem >= MIN_PREM_HIGHLIGHT,
           };
-          console.log(newItem);
           if (
             this.filters &&
             this.filters.minPremSize &&
@@ -246,9 +246,15 @@ export default {
             !(newItem.dir == this.filters.dirOption)
           )
             break;
-          //TODO fix the grid, only allow x rows
           this.optionChain.unshift(newItem);
           this.triggerHighlight(newItem);
+          const MAX_OPTIONS = 30;
+          if (this.optionChain.length > MAX_OPTIONS) {
+            this.optionChain.pop();
+          }
+          if (this.isAudioEnabled) {
+            audioService.handleOption(message.data);
+          }
           break;
         }
       }
@@ -257,11 +263,10 @@ export default {
       this.isSidebarOpen = !this.isSidebarOpen;
     },
     toggleAudio() {
-      this.isSidebarOpen = !this.isSidebarOpen;
+      this.isAudioEnabled = !this.isAudioEnabled;
     },
     handleFiltersSelected(filters) {
       this.filters = filters;
-      console.log(this.filters);
       this.optionChain = [];
     },
     triggerHighlight(item) {
