@@ -6,6 +6,7 @@ class WebSocketService {
     this.listeners = [];
   }
 
+  //TODO retry connection
   connect(url) {
     if (this.ws) {
       console.log("WebSocket is already connected.");

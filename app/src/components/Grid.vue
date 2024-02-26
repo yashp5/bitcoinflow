@@ -6,15 +6,15 @@
           class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg"
         >
           <h2 class="text-xl font-bold mb-4 text-white">Index Price</h2>
-          <p class="text-gray-300">{{ indexPrice }}</p>
+          <p class="text-gray-300 text-xl">{{ indexPrice }}</p>
         </div>
       </div>
       <div class="grid grid-cols-1 gap-4">
         <div
           class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg"
         >
-          <h2 class="text-xl font-bold mb-4 text-white">Put to Call</h2>
-          <p class="text-gray-300">{{ putCallRatio }}</p>
+          <h2 class="text-xl font-bold mb-4 text-white">Put To Call</h2>
+          <p class="text-gray-300 text-xl">{{ putCallRatio }}</p>
         </div>
       </div>
       <div class="grid grid-cols-1 gap-4">
@@ -22,7 +22,7 @@
           class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg"
         >
           <h2 class="text-xl font-bold mb-4 text-white">Call Volume</h2>
-          <p class="text-gray-300">{{ callVolume }}</p>
+          <p class="text-gray-300 text-xl">{{ callVolume }}</p>
         </div>
       </div>
       <div class="grid grid-cols-1 gap-4">
@@ -30,7 +30,7 @@
           class="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-lg"
         >
           <h2 class="text-xl font-bold mb-4 text-white">Put Volume</h2>
-          <p class="text-gray-300">{{ putVolume }}</p>
+          <p class="text-gray-300 text-xl">{{ putVolume }}</p>
         </div>
       </div>
     </div>
@@ -192,7 +192,7 @@ export default {
       optionChain: [],
       isSidebarOpen: false,
       isAudioEnabled: false,
-      filters: null
+      filters: null,
     };
   },
   created() {
@@ -221,11 +221,32 @@ export default {
             time: formatTimestamp(message.data.time),
             highlight: message.data.prem >= 0.01,
           };
-          console.log(newItem)
-          if(this.filters && this.filters.minPremSize && ! (newItem.prem >= this.filters.minPremSize) ) break;
-          if(this.filters && this.filters.minUnitSize && ! (newItem.size >= this.filters.minUnitSize) ) break;
-          if(this.filters && this.filters.typeOption && ! (newItem.cp == this.filters.typeOption) ) break;
-          if(this.filters && this.filters.dirOption && ! (newItem.dir == this.filters.dirOption) ) break;
+          console.log(newItem);
+          if (
+            this.filters &&
+            this.filters.minPremSize &&
+            !(newItem.prem >= this.filters.minPremSize)
+          )
+            break;
+          if (
+            this.filters &&
+            this.filters.minUnitSize &&
+            !(newItem.size >= this.filters.minUnitSize)
+          )
+            break;
+          if (
+            this.filters &&
+            this.filters.typeOption &&
+            !(newItem.cp == this.filters.typeOption)
+          )
+            break;
+          if (
+            this.filters &&
+            this.filters.dirOption &&
+            !(newItem.dir == this.filters.dirOption)
+          )
+            break;
+          //TODO fix the grid, only allow x rows
           this.optionChain.unshift(newItem);
           this.triggerHighlight(newItem);
           break;
@@ -239,16 +260,14 @@ export default {
       this.isSidebarOpen = !this.isSidebarOpen;
     },
     handleFiltersSelected(filters) {
-      this.filters = filters
-      console.log(this.filters)
-      this.optionChain = []
+      this.filters = filters;
+      console.log(this.filters);
+      this.optionChain = [];
     },
     triggerHighlight(item) {
       if (item.highlight) {
         setTimeout(() => {
-          const itemIndex = this.optionChain.findIndex(
-            (i) => i.id === item.id
-          );
+          const itemIndex = this.optionChain.findIndex((i) => i.id === item.id);
           if (itemIndex !== -1) {
             this.optionChain[itemIndex].highlight = false;
           }

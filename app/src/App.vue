@@ -8,7 +8,7 @@
 import MainLayout from "./components/MainLayout.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     MainLayout,
   },
