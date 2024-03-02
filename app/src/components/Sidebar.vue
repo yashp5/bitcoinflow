@@ -23,17 +23,36 @@
       <label class="block text-gray-300">Minimum Premium Size</label>
       <div class="flex flex-wrap gap-2">
         <button
-          v-for="size in premiumSizes"
-          :key="size.value"
-          @click="selectMinPremSize(size.value)"
+          v-for="label in premiumSizes"
+          :key="label.value"
+          @click="selectMinPremSize(label.value)"
           :class="{
             'bg-purple-500 bg-opacity-40 hover:bg-opacity-80':
-              minPremSize === size.value,
-            'bg-gray-700 hover:bg-gray-600': minPremSize !== size.value,
+              minPremSize === label.value,
+            'bg-gray-700 hover:bg-gray-600': minPremSize !== label.value,
           }"
           class="transition duration-150 ease-in-out p-2 flex-1 text-white font-semibold py-2 px-4 rounded shadow"
         >
-          {{ size.label }}
+          {{ label.label }}
+        </button>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <label class="block text-gray-300">Expiry</label>
+      <div class="flex flex-wrap gap-2">
+        <button
+          v-for="label in expiries"
+          :key="label.value"
+          @click="selectExpiry(label.value)"
+          :class="{
+            'bg-purple-500 bg-opacity-40 hover:bg-opacity-80':
+              expiry === label.value,
+            'bg-gray-700 hover:bg-gray-600': expiry !== label.value,
+          }"
+          class="transition duration-150 ease-in-out p-2 flex-1 text-white font-semibold py-2 px-4 rounded shadow"
+        >
+          {{ label.label }}
         </button>
       </div>
     </div>
@@ -111,6 +130,7 @@ export default {
     return {
       currency: null,
       minPremSize: null,
+      expiry: null,
       typeOption: null,
       dirOption: null,
       minUnitSize: null,
@@ -121,6 +141,13 @@ export default {
         { label: "5 BTC", value: 5 },
         { label: "10 BTC", value: 10 },
         { label: "25 BTC", value: 25 },
+      ],
+      expiries: [
+        { label: "week", value: "WEEK" },
+        { label: "month", value: "MONTH" },
+        { label: "quarter", value: "QUARTER" },
+        { label: "half year", value: "HALF_YEAR" },
+        { label: "year", value: "YEAR" },
       ],
       typesOption: [
         { label: "PUT", value: "PUT" },
@@ -136,17 +163,21 @@ export default {
     selectMinPremSize(value) {
       this.minPremSize = value;
     },
+    selectExpiry(value) {
+      this.expiry = value;
+    },
     selectTypeOption(value) {
       this.typeOption = value;
     },
     selectDirOption(value) {
       this.dirOption = value;
     },
-    clearFilters(){
+    clearFilters() {
       this.minPremSize = null;
       this.typeOption = null;
       this.dirOption = null;
       this.minUnitSize = null;
+      this.expiry = null;
     },
     closeSidebar() {
       this.$emit("closeSidebar");
@@ -158,6 +189,7 @@ export default {
         minUnitSize: this.minUnitSize,
         typeOption: this.typeOption,
         dirOption: this.dirOption,
+        expiry: this.expiry,
       });
       this.closeSidebar();
     },

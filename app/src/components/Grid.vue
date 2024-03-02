@@ -170,6 +170,7 @@
 import Sidebar from "./Sidebar.vue";
 import webSocketService from "@/services/websocketService";
 import audioService from "@/services/audioService";
+import dateService from "../services/dateService";
 
 function formatTimestamp(timestamp) {
   const date = new Date(timestamp);
@@ -216,6 +217,7 @@ export default {
           break;
         }
         case "OPTION": {
+          console.log(message.data);
           const MIN_PREM_HIGHLIGHT = 0.5;
           const newItem = {
             ...message.data,
@@ -246,6 +248,40 @@ export default {
             !(newItem.dir == this.filters.dirOption)
           )
             break;
+          if (this.filters && this.filters.expiry) {
+            const dateString = message.data.expiry;
+            const day = dateString.substring(0, 2); // Extract two characters for the day
+            const month = dateString.substring(2, 5);
+            const year = "20" + dateString.substring(5, 7);
+            const date = new Date(`${month} ${day}, ${year}`);
+            const timestamp = date.getTime();
+            let flag = 1;
+            switch (this.filters.expiry) {
+              case "WEEK": {
+                if (dateService.isInThisWeek(timestamp)) flag = 0;
+                break;
+              }
+              case "MONTH": {
+                if (dateService.isInThisMonth(timestamp)) flag = 0;
+                break;
+              }
+              case "QUARTER": {
+                if (dateService.isInThisQuarter(timestamp)) flag = 0;
+                break;
+              }
+              case "HALF_YEAR": {
+                if (dateService.isInThisHalfYear(timestamp)) flag = 0;
+                break;
+              }
+              case "YEAR": {
+                if (dateService.isInThisYear(timestamp)) flag = 0;
+                break;
+              }
+            }
+            if (flag) {
+              break;
+            }
+          }
           this.optionChain.unshift(newItem);
           this.triggerHighlight(newItem);
           const MAX_OPTIONS = 30;
