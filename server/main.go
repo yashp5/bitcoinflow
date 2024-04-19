@@ -13,6 +13,7 @@ import (
 	"github.com/yashp20/bitcoinflow/server/model"
 )
 
+//TODO add eth support
 var subscribtions = map[string]interface{}{
 	"jsonrpc": "2.0",
 	"id":      1,
@@ -44,6 +45,7 @@ func fetchData() {
 		log.Fatal("Error sending message:", err)
 	}
 
+	//TODO fix volume request
 	volumeRequest := model.JSONRPCRequest{
 		Jsonrpc: "2.0",
 		Id:      2,
@@ -54,7 +56,7 @@ func fetchData() {
 		log.Fatal("Error sending message:", err)
 	}
 
-	ticker := time.NewTicker(1 * time.Hour)
+	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
 	go func() {
@@ -224,6 +226,7 @@ func transformData() {
 
 }
 
+// TODO Fix Error reading message: read tcp 100.64.100.6:63004->193.72.79.190:443: read: operation timed out
 func setupServer() {
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
@@ -259,25 +262,3 @@ func main() {
 	go transformData()
 	setupServer()
 }
-
-/*
-TODO:
-
-1. fix max grid rows thing
-
-DONE
-2. add filters
-	a. update all the buttons
-	b. add filter logic
-
-3. fix volume data fetch
-4. add charts for volume data
-
-
-5. add audio option like aggr trade
-6. add slidebar close when we click anywhere outside
-7. add live users and chat option later on
-
-DONE
-8. fix highlights
-*/
