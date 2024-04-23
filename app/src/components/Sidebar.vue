@@ -13,6 +13,8 @@
       <select
         id="currency"
         class="w-full p-2 bg-gray-700 text-white rounded-md"
+        v-model="currency"
+        @change="selectCurrency"
       >
         <option>Bitcoin</option>
         <option>Ethereum</option>
@@ -23,7 +25,7 @@
       <label class="block text-gray-300">Minimum Premium Size</label>
       <div class="flex flex-wrap gap-2">
         <button
-          v-for="label in premiumSizes"
+          v-for="label in premiumSizes[currency]"
           :key="label.value"
           @click="selectMinPremSize(label.value)"
           :class="{
@@ -128,20 +130,30 @@
 export default {
   data() {
     return {
-      currency: null,
+      currency: "Bitcoin",
       minPremSize: null,
       expiry: null,
       typeOption: null,
       dirOption: null,
       minUnitSize: null,
-      premiumSizes: [
-        { label: "0.1 BTC", value: 0.1 },
-        { label: "0.5 BTC", value: 0.5 },
-        { label: "1 BTC", value: 1 },
-        { label: "5 BTC", value: 5 },
-        { label: "10 BTC", value: 10 },
-        { label: "25 BTC", value: 25 },
-      ],
+      premiumSizes: {
+        Bitcoin: [
+          { label: "0.1 BTC", value: 0.1 },
+          { label: "0.5 BTC", value: 0.5 },
+          { label: "1 BTC", value: 1 },
+          { label: "5 BTC", value: 5 },
+          { label: "10 BTC", value: 10 },
+          { label: "25 BTC", value: 25 },
+        ],
+        Ethereum: [
+          { label: "1 ETH", value: 1 },
+          { label: "5 ETH", value: 5 },
+          { label: "10 ETH", value: 10 },
+          { label: "25 ETH", value: 25 },
+          { label: "50 ETH", value: 50 },
+          { label: "100 ETH", value: 100 },
+        ],
+      },
       expiries: [
         { label: "week", value: "WEEK" },
         { label: "month", value: "MONTH" },

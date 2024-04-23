@@ -1,6 +1,7 @@
 package model
 
 type AppFeed struct {
+	Index    string      `json:"index"`
 	FeedType string      `json:"feedType"`
 	Data     interface{} `json:"data"`
 }

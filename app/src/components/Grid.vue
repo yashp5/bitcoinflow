@@ -193,7 +193,7 @@ export default {
       optionChain: [],
       isSidebarOpen: false,
       isAudioEnabled: false,
-      filters: null,
+      filters: { currency: "Bitcoin" },
     };
   },
   created() {
@@ -205,6 +205,8 @@ export default {
   },
   methods: {
     handleMessage(message) {
+      if (this.filters.currency == "Bitcoin" && message.index == "ETH") return;
+      if (this.filters.currency == "Ethereum" && message.index == "BTC") return;
       switch (message.feedType) {
         case "INDEX_PRICE": {
           this.indexPrice = message.data.indexPrice;
@@ -218,7 +220,7 @@ export default {
         }
         case "OPTION": {
           console.log(message.data);
-          const MIN_PREM_HIGHLIGHT = 0.5;
+          const MIN_PREM_HIGHLIGHT = 1;
           const newItem = {
             ...message.data,
             time: formatTimestamp(message.data.time),
