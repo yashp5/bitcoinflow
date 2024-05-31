@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/yashp20/bitcoinflow/server/model"
+	"github.com/yashpatel20/bitcoinflow/server/model"
 )
 
 // TODO add eth support

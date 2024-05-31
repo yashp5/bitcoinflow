@@ -1,4 +1,4 @@
-module github.com/yashp20/bitcoinflow/server
+module github.com/yashpatel20/bitcoinflow/server
 
 go 1.22.0
 
