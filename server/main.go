@@ -343,7 +343,7 @@ func setupServer() {
 		}
 	})
 
-	log.Fatal(http.ListenAndServe(":9000", nil))
+	log.Fatal(http.ListenAndServe(":6666", nil))
 }
 
 func main() {
