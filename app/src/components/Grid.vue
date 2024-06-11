@@ -197,7 +197,7 @@ export default {
     };
   },
   created() {
-    webSocketService.connect("ws://localhost:9000");
+    webSocketService.connect("wss://app.bitcoinflow.xyz");
     webSocketService.addListener(this.handleMessage);
   },
   beforeUnmount() {
@@ -219,7 +219,6 @@ export default {
           break;
         }
         case "OPTION": {
-          console.log(message.data);
           const MIN_PREM_HIGHLIGHT = 1;
           const newItem = {
             ...message.data,

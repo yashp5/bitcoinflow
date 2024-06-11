@@ -58,7 +58,7 @@ func fetchData() {
 		log.Fatal("Error sending message:", err)
 	}
 
-	ticker := time.NewTicker(2 * time.Second)
+	ticker := time.NewTicker(4 * time.Second)
 	defer ticker.Stop()
 
 	go func() {
@@ -315,17 +315,39 @@ func transformData() {
 
 }
 
+// Handler function for the REST endpoint
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintln(w, `{"message": "Hello, World!"}`)
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
 // TODO Fix Error reading message: read tcp 100.64.100.6:63004->193.72.79.190:443: read: operation timed out
 func setupServer() {
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin: func(r *http.Request) bool {
+			// Allow connections from any origin
 			return true
 		},
 	}
 
+	// Set up the route for the REST endpoint
+	http.HandleFunc("/hello", helloHandler)
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Check if it's a WebSocket upgrade request
+		if r.Header.Get("Upgrade") != "websocket" {
+			http.Error(w, "Not a websocket connection", http.StatusBadRequest)
+			return
+		}
+
+		// Upgrade the HTTP connection to a WebSocket connection
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Println("Error during connection upgrade:", err)
@@ -343,7 +365,10 @@ func setupServer() {
 		}
 	})
 
-	log.Fatal(http.ListenAndServe(":6666", nil))
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
 
 func main() {
